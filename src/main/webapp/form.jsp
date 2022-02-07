@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
 <title>Insert title here</title>
+<link href="webjars/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
@@ -23,25 +24,41 @@
 	    </div>
 	  </div>
 	</nav>
-
-	<div class="container w-40" style="outline: 1px solid #cccccc;">
-		<form method="post" action="CrudController">
-		 <h1 class="mt-3">Adicionar usuário</h1>
-		 <input type="hidden" name="id" value=${id}>
-		  <div class="mb-2">
-		    <label for="exampleInputNome1" class="form-label">Nome</label>
-		    <input type="text" class="form-control" name="nome" value=${nome}>
-		  </div>
-		  <div class="mb-2">
-		    <label for="exampleInputEmail1" class="form-label">Email</label>
-		    <input type="email" class="form-control" name="email" value=${email}>
-		  </div>
-		  <div class="mb-2">
-		    <label for="exampleInputPais" class="form-label">País</label>
-		    <input type="text" class="form-control" name="pais" value=${pais}>
-		  </div>
-		  <a href="index.jsp"><button type="submit" class="btn btn-primary col-2 mb-3">Salvar</button></a>
-		</form>
+	
+		<div class="container w-50" style="outline: 1px solid #cccccc;">
+		<form action="CrudController" method="post">
+	 <h1 class="mt-3">Adicionar usuário</h1>
+		<c:choose>
+			<c:when test="${ user == null }">
+			  <div class="mb-3">
+				<label>Nome:</label>
+				<input type="text" class="form-control"  name="nome" required/>
+				</div>
+				  <div class="mb-3">
+				<label>Email:</label>
+				<input type="text" class="form-control"  name="email"/>
+				</div>
+				  <div class="mb-3">
+				<label>País:</label>
+				<input type="text" class="form-control" name="pais"/>
+			</div>
+				<button type="submit" name="option" class="btn btn-dark mb-3" value="insert">Salvar</button>
+			</c:when>
+			<c:otherwise>
+				<input type="hidden" name="id" value="${user.id}"/>
+				<label>Nome:</label>
+				<input type="text" class="form-control" name="nome" value="${user.nome}" required/>
+				
+				<label>Email:</label>
+				<input type="text" class="form-control" name="email" value="${user.email}"/>
+				
+				<label>País:</label>
+				<input type="text" class="form-control" name="pais" value="${user.pais}"/>
+			<hr>
+				<button type="submit" name="option" class="btn btn-dark mb-3" value="update">Atualizar</button>
+			</c:otherwise>
+		</c:choose>
+	</form>
 	</div>
 </body>
 </html>

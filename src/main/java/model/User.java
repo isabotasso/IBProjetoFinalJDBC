@@ -7,10 +7,11 @@ public class User {
 	private String pais;
 	private String email;
 
-	public User(String nome, String pais, String email) {
+	public User(String email, String nome, String pais) {
+		this.email = email;
 		this.nome = nome;
 		this.pais = pais;
-		this.email = email;
+		
 	}
 	
 	public void setId(Integer id) {

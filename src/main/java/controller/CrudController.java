@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import model.Container;
+
 import model.User;
 
 /**
@@ -18,8 +18,9 @@ import model.User;
 @WebServlet("/CrudController")
 public class CrudController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private Container cont;
-	private Integer teste = 0;
+	private UserDAO userdao;
+	
+	
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -27,7 +28,9 @@ public class CrudController extends HttpServlet {
     public CrudController() {
     	super();
         // TODO Auto-generated constructor stub
-        this.cont = new Container();
+//        this.cont = new Container();
+    	this.userdao = new UserDAO();
+        
     }
 
 	/**
@@ -44,12 +47,10 @@ public class CrudController extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	
 		
 		String option = request.getParameter("option");
 		if (option == null) {
-			option = "qualquer coisa";
+			option = "";
 		}
 		switch(option) {
 			case ("insertForm"):
@@ -78,19 +79,19 @@ public class CrudController extends HttpServlet {
 	
 	private void showUpdateUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		Integer id = Integer.parseInt(request.getParameter("id"));
-		User u = this.cont.selectById(id);
+		User u = this.userdao.buscarUser(id);
 		request.setAttribute("user", u);
 		request.getRequestDispatcher("form.jsp").forward(request, response);
 	}
 	
-	private void insertUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{	
-		String nomeBack = request.getParameter("name");
+	private void insertUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		String emailBack = request.getParameter("email");
+		String nomeBack = request.getParameter("nome");
 		String paisBack = request.getParameter("pais");
 		if ((paisBack != null) && (nomeBack != null) && (emailBack != null)) {
 			if (!nomeBack.equals("")){
-				User user1 = new User(nomeBack, paisBack, emailBack);
-				this.cont.inserir(user1);
+				User user1 = new User(emailBack, nomeBack, paisBack);
+				this.userdao.addUser(user1);
 			}
 		}
 		response.sendRedirect("CrudController");
@@ -98,7 +99,7 @@ public class CrudController extends HttpServlet {
 	
 	private void selectAllUsers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		//System.out.println(this.cont.selectAll());
-		request.setAttribute("listUser", this.cont.selectAll());
+		request.setAttribute("listUser",this.userdao.getListUser());
 		request.getRequestDispatcher("index.jsp").forward(request, response);
 	}
 	
@@ -106,23 +107,22 @@ public class CrudController extends HttpServlet {
 		String idBack = request.getParameter("id");
 		if (idBack != null) {
 			Integer id = Integer.parseInt(idBack);
-			this.cont.apagar(id);
+			this.userdao.removeUser(id);
 		}
-		response.sendRedirect("CRUDController");
+		response.sendRedirect("CrudController");
 	}
 	
 	private void updateUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		String nomeBack = request.getParameter("name");
-		String emailBack = request.getParameter("email");
-		String paisBack = request.getParameter("pais");
 		String idBack = request.getParameter("id");
+		String emailBack = request.getParameter("email");
+		String nomeBack = request.getParameter("nome");
+		String paisBack = request.getParameter("pais");
 		if ((paisBack != null) && (nomeBack != null) && (emailBack != null) && (idBack != null)) {
 			if (!nomeBack.equals("")){
 				Integer id = Integer.parseInt(idBack);
-				User user1 = new User(nomeBack, paisBack, emailBack);
+				User user1 = new User(emailBack, nomeBack, paisBack);
 				user1.setId(id);
-				this.cont.alterar(user1);
+				this.userdao.updateUser(user1);
 			}
 		}
 		response.sendRedirect("CrudController");
